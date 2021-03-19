@@ -1,12 +1,12 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Home from '@/views/home/home'
-import Cart from '@/views/cart/cart'
-import Category from '@/views/category/category'
-import Profile from '@/views/profile/profile'
+import Home from 'views/home/home'
+import Cart from 'views/cart/cart'
+import Category from 'views/category/category'
+import Profile from 'views/profile/profile'
 
 const routes = [
   {
-    path: '/',
+    path: '',
     redirect: "/home"
   },
   {
