@@ -36,7 +36,7 @@ export default {
     }
 }
 </script>
-<style scoped>
+<style>
 .tab-bar-item{
     flex: 1;
     text-align: center;
