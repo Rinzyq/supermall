@@ -1,53 +1,41 @@
 <template>
-    <div class="swiper-container">
-        <swiper :options="swiperOptions">
-            <swiper-slide class="swiper-slide" v-for="(item,index) in banners" :key="index">
-                <a href=""></a>
-            </swiper-slide>
-            <template v-slot:pagination>
-                <div class="swiper-pagination"></div>
-            </template>
+    <div class="home-swiper">
+        <swiper v-if="banners.length>0">
+            <slide v-for="(item,index) in banners" :key="index" class="slide">
+                <a :href="item.link">
+                    <img :src="item.image" alt="">
+                </a>
+            </slide>
         </swiper>
     </div>
 </template>
 
 <script>
-import { Swiper, SwiperSlide, directive } from 'vue-awesome-swiper'
-import 'swiper/swiper-bundle.css'
+import {Swiper,Slide} from "vue-swiper-component";
 
 export default {
-    name:"HomeSwiper" ,
+    name:"HomeSwiper",
     components:{
         Swiper,
-        SwiperSlide
-    },
-    directives:{
-        swiper:directive
-    },
-    data(){
-        return {
-            swiperOptions:{}
-        }
+        Slide
     },
     props:{
         banners:{
             type:Array,
-            dafault(){
+            default(){
                 return []
             }
         }
-    }
+    },
 }
 </script>
 
 <style scoped>
-/*     .swiper-container{
-        
-    }
-    .swiper-slide{
-        
-    }
-    .swiper-slide:nth-child(2){
-        
-    } */
+.home-swiper{
+    width: 100%;
+    overflow: hidden;
+}
+.slide img{
+    width: 100%;
+}
 </style>
