@@ -4,7 +4,11 @@
         <home-swiper :banners="banners"></home-swiper>
         <recommend-view :recommends="recommends"></recommend-view>
         <feature-view></feature-view>
-        <tab-control class="tab-control" :titles="['流行','新款','精选']"></tab-control>
+        <tab-control @tabClick="tabClick" 
+            class="tab-control" 
+            :titles="['流行','新款','精选']">
+        </tab-control>
+        <goods-list :goods="showGoods"></goods-list>
     </div>
 </template>
 
@@ -14,6 +18,7 @@ import HomeSwiper from "./childComp/homeswiper"
 import RecommendView from "./childComp/recommendview"
 import FeatureView from "./childComp/featureview"
 import TabControl from "content/tabControl/tabcontrol"
+import GoodsList from "content/goods/goodsList"
 
 import {getHomeMultidataAxios,getHomeGoodsAxios} from "network/home"
 
@@ -24,7 +29,8 @@ export default {
         HomeSwiper,
         RecommendView,
         FeatureView,
-        TabControl
+        TabControl,
+        GoodsList
     },
     data(){
         return {
@@ -34,10 +40,29 @@ export default {
                 "pop":{page:0,list:[]},
                 "new":{page:0,list:[]},
                 "sell":{page:0,list:[]}
-            }
+            },
+            currentType:"pop"
+        }
+    },
+    computed:{
+        showGoods(){
+            return this.goods[this.currentType].list
         }
     },
     methods:{
+        tabClick(index){
+            switch(index){
+                case 0:
+                    this.currentType="pop";
+                    break;
+                case 1:
+                    this.currentType="new";
+                    break;
+                case 2:
+                    this.currentType="sell";
+            }
+        },
+        //网络请求相关方法
         getHomeMultidata(){
             getHomeMultidataAxios().then(res=>{
                 this.banners=res.data.banner.list;
@@ -51,7 +76,6 @@ export default {
             let page=this.goods[type].page+1
             getHomeGoodsAxios(type,page).then(res=>{
                 //将返回的数据push到list
-                console.log(res.data);
                 this.goods[type].list.push(...res.data.list);
                 this.goods[type].page+=1;
             }).catch(err=>{
@@ -66,7 +90,6 @@ export default {
         this.getHomeGoods("pop");
         this.getHomeGoods("new");
         this.getHomeGoods("sell");
-        /* console.log(this.goods); */
     },
 }
 </script>
@@ -89,5 +112,6 @@ export default {
         position: sticky;
         top: 44px;
         background-color: #fff;
+        z-index: 10;
     }
 </style>
