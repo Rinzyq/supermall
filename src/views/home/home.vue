@@ -1,13 +1,23 @@
 <template>
     <div id="home">
         <nav-bar class="home-nav"><template v-slot:center>购物街</template></nav-bar>
-        <scroll class="wrapper" ref="scroll" :probeType="3" @scroll="contentScroll">
-            <home-swiper :banners="banners"></home-swiper>
+        <tab-control class="tab-control"
+                @tabClick="tabClick" 
+                :titles="['流行','新款','精选']"
+                ref="tabControl1" v-show="isTabShow">
+        </tab-control>
+        <scroll class="wrapper" ref="scroll" 
+                :probeType="3" 
+                @scroll="contentScroll"
+                :pullUpload="true"
+                @pullingUp="loadMore">
+            <home-swiper :banners="banners" @swiperImgLoad="swiperImgLoad"></home-swiper>
             <recommend-view :recommends="recommends"></recommend-view>
             <feature-view></feature-view>
-            <tab-control @tabClick="tabClick" 
-                class="tab-control" 
-                :titles="['流行','新款','精选']">
+            <tab-control class="tab-control"
+                @tabClick="tabClick" 
+                :titles="['流行','新款','精选']"
+                ref="tabControl2">
             </tab-control>
             <goods-list :goods="showGoods"></goods-list>
         </scroll>
@@ -17,10 +27,10 @@
 
 <script>
 import NavBar from "common/navbar/navbar"
+import TabControl from "content/tabControl/tabcontrol"
 import HomeSwiper from "./childComp/homeswiper"
 import RecommendView from "./childComp/recommendview"
 import FeatureView from "./childComp/featureview"
-import TabControl from "content/tabControl/tabcontrol"
 import GoodsList from "content/goods/goodsList"
 
 
@@ -28,6 +38,8 @@ import GoodsList from "content/goods/goodsList"
 import Scroll from "common/scroll/scroll"
 //引入BackTop组件
 import BackTop from "content/backTop/backtop"
+//引入防抖函数
+/* import {debounce} from "@/common/utils" */
 //引入网络相关方法
 import {getHomeMultidataAxios,getHomeGoodsAxios} from "network/home"
 
@@ -53,7 +65,9 @@ export default {
                 "sell":{page:0,list:[]}
             },
             currentType:"pop",
-            isShow:false
+            isShow:false,
+            tabOffsetTop:0,
+            isTabShow:false,
         }
     },
     computed:{
@@ -73,12 +87,23 @@ export default {
                 case 2:
                     this.currentType="sell";
             }
+            this.$refs.tabControl1.currentIndex=index;
+            this.$refs.tabControl2.currentIndex=index;
         },
         backClick(){
             this.$refs.scroll.scrollTo(0,0);
         },
         contentScroll(position){
+            //判断backTop是否显示
             this.isShow=position.y<-500;
+            //判断tabControl是否吸顶
+            this.isTabShow=(-position.y)>this.tabOffsetTop;
+        },
+        loadMore(){
+            this.getHomeGoods(this.currentType);
+        },
+        swiperImgLoad(){
+            this.tabOffsetTop=this.$refs.tabControl2.$el.offsetTop;
         },
         //网络请求相关方法
         getHomeMultidata(){
@@ -87,7 +112,7 @@ export default {
                 this.recommends=res.data.recommend.list;
             }).catch(err=>{
                 console.log(err);
-            })
+            });
         },
         getHomeGoods(type){
             //每次请求数据刷新page
@@ -96,9 +121,16 @@ export default {
                 //将返回的数据push到list
                 this.goods[type].list.push(...res.data.list);
                 this.goods[type].page+=1;
+                //刷新可滚动区域高度
+                this.$refs.scroll.refresh();
+                //完成上拉操作
+                this.$nextTick(()=>{
+                //在下方created周期也使用了这个方法，所以找不到scroll，需要在nextTick函数里调用
+                this.$refs.scroll.finishPullUp();
+            });
             }).catch(err=>{
                 console.log(err);
-            })
+            });
         }
     },
     created(){
@@ -116,22 +148,15 @@ export default {
     .home-nav{
         background-color: var(--color-tint);
         color: #fff;
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        z-index: 10;
     }
     #home{
-        padding-top: 44px;
         height: 100vh;
         position: relative;
     }
     .tab-control{
-        /* position: sticky; */
-        top: 44px;
+        position: relative;
+        z-index: 10;
         background-color: #fff;
-        /* z-index: 10; */
     }
     .wrapper{   /* 如果用最新版本的better-scroll会导致没办法滑动 */
         overflow: hidden;

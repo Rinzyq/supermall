@@ -3,7 +3,7 @@
         <swiper v-if="banners.length>0">
             <slide v-for="(item,index) in banners" :key="index" class="slide">
                 <a :href="item.link">
-                    <img :src="item.image" alt="">
+                    <img :src="item.image" alt="" @load="imgLoad">
                 </a>
             </slide>
         </swiper>
@@ -27,6 +27,19 @@ export default {
             }
         }
     },
+    data(){
+        return {
+            isLoad:false
+        }
+    },
+    methods:{
+        imgLoad(){
+            if(!this.isLoad){//防止多次调用
+                this.$emit("swiperImgLoad");
+                this.isLoad=true;
+            }
+        }
+    }
 }
 </script>
 

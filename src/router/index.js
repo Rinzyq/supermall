@@ -3,6 +3,7 @@ import Home from 'views/home/home'
 import Cart from 'views/cart/cart'
 import Category from 'views/category/category'
 import Profile from 'views/profile/profile'
+import Detail from "views/detail/detail"
 
 const routes = [
   {
@@ -28,6 +29,11 @@ const routes = [
     path: '/profile',
     name: 'Profile',
     component: Profile
+  },
+  {
+    path:"/detail/:id",
+    name:"Detail",
+    component:Detail
   }
 ]
 
