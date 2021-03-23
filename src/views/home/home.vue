@@ -158,7 +158,7 @@ export default {
         z-index: 10;
         background-color: #fff;
     }
-    .wrapper{   /* 如果用最新版本的better-scroll会导致没办法滑动 */
+    .wrapper{  
         overflow: hidden;
         position: absolute;
         top: 44px;

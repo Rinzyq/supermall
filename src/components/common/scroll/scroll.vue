@@ -44,7 +44,7 @@ export default {
         //监听上拉事件
         this.scrollData.on("pullingUp",()=>{
             this.$emit("pullingUp")
-        })
+        });
     },
     methods:{
         scrollTo(x,y,time=500){
