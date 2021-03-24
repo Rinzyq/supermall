@@ -1,6 +1,6 @@
 <template>
     <div id="detail">
-        <detail-nav-bar @titleClick="titleClick"></detail-nav-bar>
+        <detail-nav-bar @titleClick="titleClick" ref="nav"></detail-nav-bar>
         <!--scroll的类名只能用wrapper不然会无法滚动-->
         <scroll class="wrapper" ref="scroll" :probeType="3"
             :pullUpload="true" @scroll="detailScroll">
@@ -12,6 +12,7 @@
             <detail-comment-info ref="comment" :commentInfo="commentInfo"></detail-comment-info>
             <goods-list ref="recommend" :goods="recommends"></goods-list>
         </scroll>
+        <detail-bottom-bar></detail-bottom-bar>
     </div>
 </template>
 
@@ -24,6 +25,7 @@ import DetailGoodsInfo from "./childComp/detailGoodsInfo"
 import DetailParamInfo from "./childComp/detailParamInfo"
 import DetailCommentInfo from "./childComp/detailCommentInfo"
 import GoodsList from "content/goods/goodsList"
+import DetailBottomBar from "./childComp/detailBottomBar"
 
 //引入滚动组件
 import Scroll from "common/scroll/scroll"
@@ -42,6 +44,7 @@ export default {
         DetailParamInfo,
         DetailCommentInfo,
         GoodsList,
+        DetailBottomBar,
         Scroll
     },
     data(){
@@ -54,11 +57,19 @@ export default {
             detailParams:{},
             commentInfo:{},
             recommends:[],
-            themeTopYs:[]
+            themeTopYs:[],
+            currentIndex:0
         }
     },
     methods:{
         imageLoad(){
+            //获取各组件offsetTop
+            this.themeTopYs.push(0);
+            this.themeTopYs.push(this.$refs.param.$el.offsetTop);
+            this.themeTopYs.push(this.$refs.comment.$el.offsetTop);
+            this.themeTopYs.push(this.$refs.recommend.$el.offsetTop);
+            //push一个最大值进入数组方便detailScroll函数的判断
+            this.themeTopYs.push(Number.MAX_VALUE);
             //刷新可滚动区域
             this.$refs.scroll.refresh();
         },
@@ -66,15 +77,16 @@ export default {
             this.$refs.scroll.scrollTo(0,-this.themeTopYs[index]);
         },
         detailScroll(position){
-            let positionY=-position.y
-            console.log(position);
+            let positionY=-position.y;
+            let length=this.themeTopYs.length;
+            for(let i=0;i<length-1;i++){
+                if(this.currentIndex!==i&&
+                    (positionY>=this.themeTopYs[i]&&positionY<this.themeTopYs[i+1])){
+                    this.currentIndex=i;
+                    this.$refs.nav.currentIndex=i;
+                }
+            }
         }
-            /* //获取各组件offsetTop
-            this.themeTopYs.push(0);
-            this.themeTopYs.push(this.$refs.param.$el.offsetTop);
-            this.themeTopYs.push(this.$refs.comment.$el.offsetTop);
-            this.themeTopYs.push(this.$refs.recommend.$el.offsetTop);
-            console.log(this.themeTopYs); */
     },
     created(){
         this.iid=this.$route.params.id;
@@ -116,7 +128,7 @@ export default {
 .wrapper{
     position: absolute;
     top: 44px;
-    bottom: 0px;
+    bottom: 58px;
     width: 100%;
     overflow: hidden;
 }
