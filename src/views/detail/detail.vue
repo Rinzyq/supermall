@@ -1,15 +1,16 @@
 <template>
     <div id="detail">
-        <detail-nav-bar></detail-nav-bar>
+        <detail-nav-bar @titleClick="titleClick"></detail-nav-bar>
         <!--scroll的类名只能用wrapper不然会无法滚动-->
-        <scroll class="wrapper" ref="scroll"
-            :pullUpload="true">
+        <scroll class="wrapper" ref="scroll" :probeType="3"
+            :pullUpload="true" @scroll="detailScroll">
             <detail-swiper :swiperImg="swiperImg"></detail-swiper>
             <detail-base-info :goods="goodsInfo"></detail-base-info>
             <detail-shop-info :shop="shop"></detail-shop-info>
             <detail-goods-info :detailInfo="detailInfo" @imageLoad="imageLoad"></detail-goods-info>
-            <detail-param-info :detailParams="detailParams"></detail-param-info>
-            <detail-comment-info :commentInfo="commentInfo"></detail-comment-info>
+            <detail-param-info ref="param" :detailParams="detailParams"></detail-param-info>
+            <detail-comment-info ref="comment" :commentInfo="commentInfo"></detail-comment-info>
+            <goods-list ref="recommend" :goods="recommends"></goods-list>
         </scroll>
     </div>
 </template>
@@ -22,12 +23,13 @@ import DetailShopInfo from "./childComp/detailShopInfo"
 import DetailGoodsInfo from "./childComp/detailGoodsInfo"
 import DetailParamInfo from "./childComp/detailParamInfo"
 import DetailCommentInfo from "./childComp/detailCommentInfo"
+import GoodsList from "content/goods/goodsList"
 
 //引入滚动组件
 import Scroll from "common/scroll/scroll"
 
 //获取网络请求
-import {getDetail,GoodsInfo,Shop,GoodsParam} from "network/detail"
+import {getDetail,getDetailRecommend,GoodsInfo,Shop,GoodsParam} from "network/detail"
 
 export default {
     name:"Detail",
@@ -39,6 +41,7 @@ export default {
         DetailGoodsInfo,
         DetailParamInfo,
         DetailCommentInfo,
+        GoodsList,
         Scroll
     },
     data(){
@@ -49,14 +52,29 @@ export default {
             shop:{},
             detailInfo:{},
             detailParams:{},
-            commentInfo:{}
+            commentInfo:{},
+            recommends:[],
+            themeTopYs:[]
         }
     },
     methods:{
         imageLoad(){
             //刷新可滚动区域
             this.$refs.scroll.refresh();
+        },
+        titleClick(index){
+            this.$refs.scroll.scrollTo(0,-this.themeTopYs[index]);
+        },
+        detailScroll(position){
+            let positionY=-position.y
+            console.log(position);
         }
+            /* //获取各组件offsetTop
+            this.themeTopYs.push(0);
+            this.themeTopYs.push(this.$refs.param.$el.offsetTop);
+            this.themeTopYs.push(this.$refs.comment.$el.offsetTop);
+            this.themeTopYs.push(this.$refs.recommend.$el.offsetTop);
+            console.log(this.themeTopYs); */
     },
     created(){
         this.iid=this.$route.params.id;
@@ -73,8 +91,16 @@ export default {
             //获取商品尺码参数信息
             this.detailParams=new GoodsParam(data.itemParams.info,data.itemParams.rule);
             //获取用户评论信息
-            this.commentInfo=data.rate.list[0];
-            console.log(data.rate.list[0]);
+            if(data.rate.cRate!==0){
+                this.commentInfo=data.rate.list[0];
+            }
+        }).catch(err=>{
+            console.log(err);
+        });
+        getDetailRecommend().then(res=>{
+            this.recommends=res.data.list;
+            //刷新可滚动区域高度
+            this.$refs.scroll.refresh();
         })
     },
 }

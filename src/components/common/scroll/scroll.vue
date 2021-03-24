@@ -47,7 +47,7 @@ export default {
         });
     },
     methods:{
-        scrollTo(x,y,time=500){
+        scrollTo(x,y,time=300){
             this.scrollData.scrollTo(x,y,time);
         },
         finishPullUp(){

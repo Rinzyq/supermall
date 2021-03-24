@@ -1,9 +1,12 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import Vue from 'vue'
+import VueRouter from 'vue-router'
 import Home from 'views/home/home'
 import Cart from 'views/cart/cart'
 import Category from 'views/category/category'
 import Profile from 'views/profile/profile'
 import Detail from "views/detail/detail"
+
+Vue.use(VueRouter)
 
 const routes = [
   {
@@ -37,8 +40,9 @@ const routes = [
   }
 ]
 
-const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
+const router = new VueRouter({
+  mode: 'history',
+  base: process.env.BASE_URL,
   routes
 })
 
