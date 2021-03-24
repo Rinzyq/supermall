@@ -22,7 +22,7 @@
 </template>
 
 <script>
-/* import {formatDate} from "@/common/utils"; */
+import {formatDate} from "@/common/utils";
 
 export default {
     name:"DetailCommentInfo",
@@ -37,8 +37,7 @@ export default {
     methods:{
         showDate(value){
             let date=new Date(value*1000);//这里获取的时间以毫秒为单位，所以乘上1000
-            /* return formatDate(date,"yyyy-MM-dd") */
-            return date.parse("yyyy-mm-dd")
+            return formatDate(date,"yyyy-MM-dd hh:mm:ss")
         }
     }
 }
