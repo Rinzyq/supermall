@@ -21,7 +21,7 @@
             </tab-control>
             <goods-list :goods="showGoods"></goods-list>
         </scroll>
-        <back-top @click="backClick" v-show="isShow"/>
+        <back-top @click.native="backClick" v-show="isShow"/>
     </div>
 </template>
 
@@ -33,13 +33,11 @@ import RecommendView from "./childComp/recommendview"
 import FeatureView from "./childComp/featureview"
 import GoodsList from "content/goods/goodsList"
 
-
 //引入滚动组件
 import Scroll from "common/scroll/scroll"
-//引入BackTop组件
-import BackTop from "content/backTop/backtop"
-//引入防抖函数
-/* import {debounce} from "@/common/utils" */
+//引入混入的backTop组件
+import {backTopMixin} from "@/common/mixin"
+
 //引入网络相关方法
 import {getHomeMultidataAxios,getHomeGoodsAxios} from "network/home"
 
@@ -52,9 +50,9 @@ export default {
         FeatureView,
         TabControl,
         GoodsList,
-        Scroll,
-        BackTop
+        Scroll
     },
+    mixins:[backTopMixin],
     data(){
         return {
             banners:[],
@@ -65,9 +63,8 @@ export default {
                 "sell":{page:0,list:[]}
             },
             currentType:"pop",
-            isShow:false,
             tabOffsetTop:0,
-            isTabShow:false,
+            isTabShow:false
         }
     },
     computed:{
@@ -90,12 +87,9 @@ export default {
             this.$refs.tabControl1.currentIndex=index;
             this.$refs.tabControl2.currentIndex=index;
         },
-        backClick(){
-            this.$refs.scroll.scrollTo(0,0);
-        },
         contentScroll(position){
             //判断backTop是否显示
-            this.isShow=position.y<-500;
+            this.isShow=position.y<-1000;
             //判断tabControl是否吸顶
             this.isTabShow=(-position.y)>this.tabOffsetTop;
         },

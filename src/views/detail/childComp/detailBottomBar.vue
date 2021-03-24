@@ -24,7 +24,11 @@
 <script>
 export default {
     name:"DetailBottomBar",
-
+    methods:{
+        addToCart(){
+            this.$emit("addCart");
+        }
+    }
 }
 </script>
 
@@ -70,6 +74,7 @@ export default {
     font-size: 14px;
     color: #fff;
     line-height: 58px;
+    height: 58px;
 }
 .cart{
     background-color: #ffe817;

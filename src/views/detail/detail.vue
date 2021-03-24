@@ -2,6 +2,7 @@
     <div id="detail">
         <detail-nav-bar @titleClick="titleClick" ref="nav"></detail-nav-bar>
         <!--scroll的类名只能用wrapper不然会无法滚动-->
+        <div>{{$store.cartList}}</div>
         <scroll class="wrapper" ref="scroll" :probeType="3"
             :pullUpload="true" @scroll="detailScroll">
             <detail-swiper :swiperImg="swiperImg"></detail-swiper>
@@ -12,7 +13,8 @@
             <detail-comment-info ref="comment" :commentInfo="commentInfo"></detail-comment-info>
             <goods-list ref="recommend" :goods="recommends"></goods-list>
         </scroll>
-        <detail-bottom-bar></detail-bottom-bar>
+        <back-top @click.native="backClick" v-show="isShow"/>
+        <detail-bottom-bar @addCart="addCart"></detail-bottom-bar>
     </div>
 </template>
 
@@ -29,6 +31,8 @@ import DetailBottomBar from "./childComp/detailBottomBar"
 
 //引入滚动组件
 import Scroll from "common/scroll/scroll"
+//引入混入的backTop组件
+import {backTopMixin} from "@/common/mixin"
 
 //获取网络请求
 import {getDetail,getDetailRecommend,GoodsInfo,Shop,GoodsParam} from "network/detail"
@@ -47,6 +51,7 @@ export default {
         DetailBottomBar,
         Scroll
     },
+    mixins:[backTopMixin],
     data(){
         return {
             iid:null,
@@ -77,6 +82,7 @@ export default {
             this.$refs.scroll.scrollTo(0,-this.themeTopYs[index]);
         },
         detailScroll(position){
+            //判断顶部导航栏的位置
             let positionY=-position.y;
             let length=this.themeTopYs.length;
             for(let i=0;i<length-1;i++){
@@ -86,6 +92,19 @@ export default {
                     this.$refs.nav.currentIndex=i;
                 }
             }
+            //判断backTop是否显示
+            this.isShow=position.y<-1000;
+        },
+        addCart(){
+            //获取购物车展示的信息
+            const product={};
+            product.img=this.swiperImg[0];
+            product.title=this.goodsInfo.title;
+            product.desc=this.goodsInfo.desc;
+            product.price=this.goodsInfo.price;
+            product.iid=this.iid;
+            //添加至store
+            this.$store.commit("addItemCart",product);
         }
     },
     created(){

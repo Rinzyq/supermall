@@ -1,3 +1,3 @@
 <template>
-    <div>购物车</div>
+    <div>{{$store.cartList}}</div>
 </template>
