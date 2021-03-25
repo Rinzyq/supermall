@@ -4,12 +4,14 @@
         <scroll class="wrapper" :pullUpload="true" ref="scroll"  :probeType="3">
             <cart-list></cart-list>
         </scroll>
+        <cart-bottom-bar></cart-bottom-bar>
     </div>
 </template>
 
 <script>
 import NavBar from "common/navbar/navbar"
 import CartList from "./childComp/cartList"
+import CartBottomBar from "./childComp/cartBottomBar"
 
 //引入mapGetters辅助函数
 import {mapGetters} from "vuex"
@@ -21,6 +23,7 @@ export default {
     components:{
         NavBar,
         CartList,
+        CartBottomBar,
         Scroll
     },
     computed:{
@@ -46,6 +49,6 @@ export default {
     overflow: hidden;
     position: absolute;
     top: 44px;
-    bottom: 49px;
+    bottom: 89px;
 }
 </style>
