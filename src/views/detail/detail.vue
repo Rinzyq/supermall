@@ -2,7 +2,6 @@
     <div id="detail">
         <detail-nav-bar @titleClick="titleClick" ref="nav"></detail-nav-bar>
         <!--scroll的类名只能用wrapper不然会无法滚动-->
-        <div>{{$store.cartList}}</div>
         <scroll class="wrapper" ref="scroll" :probeType="3"
             :pullUpload="true" @scroll="detailScroll">
             <detail-swiper :swiperImg="swiperImg"></detail-swiper>
@@ -104,7 +103,7 @@ export default {
             product.price=this.goodsInfo.price;
             product.iid=this.iid;
             //添加至store
-            this.$store.commit("addItemCart",product);
+            this.$store.dispatch("addItemCart",product);
         }
     },
     created(){

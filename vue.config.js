@@ -13,6 +13,13 @@ module.exports = {
   },
   devServer:{
     disableHostCheck:true
+  },
+  //修改html-webpack-plugin的值
+  chainWebpack:config=>{
+    config.plugin('html').tap(args=>{
+      args[0].title="购物街";
+      return args;
+    })
   }
 }
   
