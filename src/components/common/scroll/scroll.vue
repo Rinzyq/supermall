@@ -30,12 +30,12 @@ export default {
             }
         }
     },
-    mounted(){   //需要在挂在模板后初始化BScroll，不然找不到模板
+    mounted(){
         //创建BScroll对象
         this.scrollData=new BScroll(this.$refs.wrapper,{
-            probeType:this.probeType,
-            click:true,
-            pullUpLoad:this.pullUpload
+        probeType:this.probeType,
+        click:true,
+        pullUpLoad:this.pullUpload
         });
         //监听滚动位置
         this.scrollData.on("scroll",(position)=>{
