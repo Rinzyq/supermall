@@ -6,6 +6,7 @@
             <span>全选</span>
         </div>
         <div class="total">合计：￥{{totalPrice}}</div>
+        <div class="del" @click="delClick">清空</div>
         <div class="calculate">结算:({{totalCount}})</div>
     </div>
 </template>
@@ -41,6 +42,9 @@ export default {
             }else{
                 this.$store.commit("trueCheck");
             }
+        },
+        delClick(){
+            this.$store.commit("delateItem");
         }
     }
 }
@@ -62,20 +66,27 @@ export default {
     align-items: center;
     margin-left: 10px;
     width: 60px;
-    font-size: 16px;
+    font-size: 12px;
 }
 .check-button{
     line-height: 20px;
     margin-right: 6px;
 }
 .total{
-    margin-left: 25px;
+    margin-left: 2px;
     flex: 1;
+    font-size: 12px;
 }
 .calculate{
     width: 90px;
     color: #fff;
     background-color: var(--color-tint);
+    text-align: center;
+}
+.del{
+    width: 60px;
+    color: #fff;
+    background-color: red;
     text-align: center;
 }
 </style>

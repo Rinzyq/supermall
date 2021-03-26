@@ -11,7 +11,11 @@
             <div class="item-desc">{{product.desc}}</div>
             <div class="info-bottom">
                 <div class="item-price left">￥{{product.price}}</div>
-                <div class="item-count right">x{{product.count}}</div>
+                <div class="item-count right">
+                    <div class="reduction" @click="reductionClick(product.iid)">－</div>
+                    <div>{{product.count}}</div>
+                    <div class="increment" @click="incrementClick(product.iid)">+</div>
+                </div>
             </div>
         </div>
     </div>
@@ -36,6 +40,13 @@ export default {
     methods:{
         checkClick(){
             this.$store.commit("isChecked",this.product);
+        },
+        incrementClick(iid){
+            this.$store.commit("addClick",iid);
+        },
+        reductionClick(iid){
+            if(this.product.count==0) return ;
+            this.$store.commit("cutClick",iid);
         }
     }
 }
@@ -77,7 +88,7 @@ export default {
 .info-bottom{
     margin-top: 10px;
     position: absolute;
-    bottom: 10px;
+    bottom: 5px;
     left: 10px;
     right: 10px;
 }
@@ -88,5 +99,18 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+.item-count{
+    display: flex;
+    font-size: 17px;
+}
+.increment{
+    margin-left: 15px;
+}
+.reduction{
+    margin-right: 10px;
+    font-size: 20px;
+    position: relative;
+    top: -3px;
 }
 </style>

@@ -18,5 +18,14 @@ export default {
         state.cartList.forEach(item=>{
             item.checked=true;
         });
+    },
+    addClick(state,iid){
+        state.cartList.find(item=>item.iid===iid).count++;
+    },
+    cutClick(state,iid){
+        state.cartList.find(item=>item.iid===iid).count--;
+    },
+    delateItem(state){
+        state.cartList=[];
     }
 }

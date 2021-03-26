@@ -103,7 +103,9 @@ export default {
             product.price=this.goodsInfo.price;
             product.iid=this.iid;
             //添加至store
-            this.$store.dispatch("addItemCart",product);
+            this.$store.dispatch("addItemCart",product).then(res=>{
+                this.$toast.show(res);
+            })
         }
     },
     created(){
