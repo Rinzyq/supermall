@@ -6,12 +6,16 @@ import store from './store'
 import toast from "common/toast"
 //引入fastclick
 import FastClick from "fastclick"
+//引入lazyload插件
+import VueLazyLoad from "vue-lazyload"
 
 Vue.config.productionTip = false
 //安装toast插件
 Vue.use(toast);
 //解决移动端300ms延迟
 FastClick.attach(document.body);
+//安装懒加载插件
+Vue.use(VueLazyLoad);
 
 new Vue({
   router,
